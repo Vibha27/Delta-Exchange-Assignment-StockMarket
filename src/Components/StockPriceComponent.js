@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import io from "socket.io-client";
 import {
   makeStyles,
   TableContainer,
@@ -74,6 +75,9 @@ const StockPriceComponent = () => {
   const [keepLoading, setKeepLoading] = useState(true);
   const [stockDataArr, setStockDataArr] = useState([]);
 
+  // Socket Connection
+  const ENDPOINT = "wss://production-esocket.delta.exchange";
+
   //   Fetching data from Api
   const fetchStocks = () => {
     fetch('https://api.delta.exchange/v2/products')
@@ -86,55 +90,38 @@ const StockPriceComponent = () => {
 
   }
 
-  useEffect(() => {
-  fetchStocks();
-  }, [])
+  // Post data on Socket Connection
+  const SendDataOnline = () => {
+    const socket = io(ENDPOINT);
+    console.log(socket);
+  }
 
-  const data = [
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Gingerbread", 356, 16.0, 49, 3.9),
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Gingerbread", 356, 16.0, 49, 3.9),
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Gingerbread", 356, 16.0, 49, 3.9),
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Gingerbread", 356, 16.0, 49, 3.9)
-  ];
+  useEffect(() => {
+    SendDataOnline();
+    fetchStocks();
+  }, [])
 
   const classes = useStyles();
 
   return (
     <div>
-      Sticky Header + Column
       <TableContainer className={classes.tableContainer}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
               <StickyTableCell className={classes.head}>
                 <StyledTableCell className={classes.head}>
-                  Description
+                  Symbol
                 </StyledTableCell>
               </StickyTableCell>
               <StyledTableCell className={classes.head}>
-                Symbol
-              </StyledTableCell>
+                  Description
+                </StyledTableCell>
               <StyledTableCell className={classes.head}>
                 Underlying Asset
               </StyledTableCell>
               <StyledTableCell className={classes.head}>
-                Market Price
+                Mark Price
               </StyledTableCell>
             </TableRow>
           </TableHead>
@@ -147,13 +134,13 @@ const StockPriceComponent = () => {
                       
                       className={classes.cell}
                     >
-                      {stock.description}
+                      {stock.symbol}
                     </StyledTableCell>
                   </StickyTableCell>
                   <StyledTableCell
                     className={classes.cell}
                   >
-                    {stock.symbol}
+                    {stock.description}
                   </StyledTableCell>
                   <StyledTableCell
                     
